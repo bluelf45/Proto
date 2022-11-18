@@ -22,9 +22,15 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MessageServiceClient interface {
-	Upload(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Reply, error)
-	Download(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Message, error)
-	DataRequest(ctx context.Context, in *RequestNN, opts ...grpc.CallOption) (*Message, error)
+	//Guardianes
+	GetSoldados(ctx context.Context, in *SoldierRequest, opts ...grpc.CallOption) (*SoldierAnswer, error)
+	//broker
+	Redirect(ctx context.Context, in *Address, opts ...grpc.CallOption) (*Address, error)
+	//Vanguardia
+	AddBase(ctx context.Context, in *Base, opts ...grpc.CallOption) (*VectorClock, error)
+	RenameBase(ctx context.Context, in *Rename, opts ...grpc.CallOption) (*VectorClock, error)
+	UpdateValue(ctx context.Context, in *Base, opts ...grpc.CallOption) (*VectorClock, error)
+	DeleteBase(ctx context.Context, in *Base, opts ...grpc.CallOption) (*VectorClock, error)
 }
 
 type messageServiceClient struct {
@@ -35,27 +41,54 @@ func NewMessageServiceClient(cc grpc.ClientConnInterface) MessageServiceClient {
 	return &messageServiceClient{cc}
 }
 
-func (c *messageServiceClient) Upload(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Reply, error) {
-	out := new(Reply)
-	err := c.cc.Invoke(ctx, "/main.MessageService/Upload", in, out, opts...)
+func (c *messageServiceClient) GetSoldados(ctx context.Context, in *SoldierRequest, opts ...grpc.CallOption) (*SoldierAnswer, error) {
+	out := new(SoldierAnswer)
+	err := c.cc.Invoke(ctx, "/main.MessageService/GetSoldados", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *messageServiceClient) Download(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Message, error) {
-	out := new(Message)
-	err := c.cc.Invoke(ctx, "/main.MessageService/Download", in, out, opts...)
+func (c *messageServiceClient) Redirect(ctx context.Context, in *Address, opts ...grpc.CallOption) (*Address, error) {
+	out := new(Address)
+	err := c.cc.Invoke(ctx, "/main.MessageService/Redirect", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *messageServiceClient) DataRequest(ctx context.Context, in *RequestNN, opts ...grpc.CallOption) (*Message, error) {
-	out := new(Message)
-	err := c.cc.Invoke(ctx, "/main.MessageService/DataRequest", in, out, opts...)
+func (c *messageServiceClient) AddBase(ctx context.Context, in *Base, opts ...grpc.CallOption) (*VectorClock, error) {
+	out := new(VectorClock)
+	err := c.cc.Invoke(ctx, "/main.MessageService/AddBase", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *messageServiceClient) RenameBase(ctx context.Context, in *Rename, opts ...grpc.CallOption) (*VectorClock, error) {
+	out := new(VectorClock)
+	err := c.cc.Invoke(ctx, "/main.MessageService/RenameBase", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *messageServiceClient) UpdateValue(ctx context.Context, in *Base, opts ...grpc.CallOption) (*VectorClock, error) {
+	out := new(VectorClock)
+	err := c.cc.Invoke(ctx, "/main.MessageService/UpdateValue", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *messageServiceClient) DeleteBase(ctx context.Context, in *Base, opts ...grpc.CallOption) (*VectorClock, error) {
+	out := new(VectorClock)
+	err := c.cc.Invoke(ctx, "/main.MessageService/DeleteBase", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -66,9 +99,15 @@ func (c *messageServiceClient) DataRequest(ctx context.Context, in *RequestNN, o
 // All implementations must embed UnimplementedMessageServiceServer
 // for forward compatibility
 type MessageServiceServer interface {
-	Upload(context.Context, *Message) (*Reply, error)
-	Download(context.Context, *Request) (*Message, error)
-	DataRequest(context.Context, *RequestNN) (*Message, error)
+	//Guardianes
+	GetSoldados(context.Context, *SoldierRequest) (*SoldierAnswer, error)
+	//broker
+	Redirect(context.Context, *Address) (*Address, error)
+	//Vanguardia
+	AddBase(context.Context, *Base) (*VectorClock, error)
+	RenameBase(context.Context, *Rename) (*VectorClock, error)
+	UpdateValue(context.Context, *Base) (*VectorClock, error)
+	DeleteBase(context.Context, *Base) (*VectorClock, error)
 	mustEmbedUnimplementedMessageServiceServer()
 }
 
@@ -76,14 +115,23 @@ type MessageServiceServer interface {
 type UnimplementedMessageServiceServer struct {
 }
 
-func (UnimplementedMessageServiceServer) Upload(context.Context, *Message) (*Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Upload not implemented")
+func (UnimplementedMessageServiceServer) GetSoldados(context.Context, *SoldierRequest) (*SoldierAnswer, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSoldados not implemented")
 }
-func (UnimplementedMessageServiceServer) Download(context.Context, *Request) (*Message, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Download not implemented")
+func (UnimplementedMessageServiceServer) Redirect(context.Context, *Address) (*Address, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Redirect not implemented")
 }
-func (UnimplementedMessageServiceServer) DataRequest(context.Context, *RequestNN) (*Message, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DataRequest not implemented")
+func (UnimplementedMessageServiceServer) AddBase(context.Context, *Base) (*VectorClock, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddBase not implemented")
+}
+func (UnimplementedMessageServiceServer) RenameBase(context.Context, *Rename) (*VectorClock, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RenameBase not implemented")
+}
+func (UnimplementedMessageServiceServer) UpdateValue(context.Context, *Base) (*VectorClock, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateValue not implemented")
+}
+func (UnimplementedMessageServiceServer) DeleteBase(context.Context, *Base) (*VectorClock, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteBase not implemented")
 }
 func (UnimplementedMessageServiceServer) mustEmbedUnimplementedMessageServiceServer() {}
 
@@ -98,56 +146,110 @@ func RegisterMessageServiceServer(s grpc.ServiceRegistrar, srv MessageServiceSer
 	s.RegisterService(&MessageService_ServiceDesc, srv)
 }
 
-func _MessageService_Upload_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Message)
+func _MessageService_GetSoldados_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SoldierRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MessageServiceServer).Upload(ctx, in)
+		return srv.(MessageServiceServer).GetSoldados(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/main.MessageService/Upload",
+		FullMethod: "/main.MessageService/GetSoldados",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessageServiceServer).Upload(ctx, req.(*Message))
+		return srv.(MessageServiceServer).GetSoldados(ctx, req.(*SoldierRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MessageService_Download_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
+func _MessageService_Redirect_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Address)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MessageServiceServer).Download(ctx, in)
+		return srv.(MessageServiceServer).Redirect(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/main.MessageService/Download",
+		FullMethod: "/main.MessageService/Redirect",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessageServiceServer).Download(ctx, req.(*Request))
+		return srv.(MessageServiceServer).Redirect(ctx, req.(*Address))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MessageService_DataRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RequestNN)
+func _MessageService_AddBase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Base)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MessageServiceServer).DataRequest(ctx, in)
+		return srv.(MessageServiceServer).AddBase(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/main.MessageService/DataRequest",
+		FullMethod: "/main.MessageService/AddBase",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessageServiceServer).DataRequest(ctx, req.(*RequestNN))
+		return srv.(MessageServiceServer).AddBase(ctx, req.(*Base))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MessageService_RenameBase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Rename)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessageServiceServer).RenameBase(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/main.MessageService/RenameBase",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessageServiceServer).RenameBase(ctx, req.(*Rename))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MessageService_UpdateValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Base)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessageServiceServer).UpdateValue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/main.MessageService/UpdateValue",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessageServiceServer).UpdateValue(ctx, req.(*Base))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MessageService_DeleteBase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Base)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessageServiceServer).DeleteBase(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/main.MessageService/DeleteBase",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessageServiceServer).DeleteBase(ctx, req.(*Base))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -160,16 +262,28 @@ var MessageService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MessageServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Upload",
-			Handler:    _MessageService_Upload_Handler,
+			MethodName: "GetSoldados",
+			Handler:    _MessageService_GetSoldados_Handler,
 		},
 		{
-			MethodName: "Download",
-			Handler:    _MessageService_Download_Handler,
+			MethodName: "Redirect",
+			Handler:    _MessageService_Redirect_Handler,
 		},
 		{
-			MethodName: "DataRequest",
-			Handler:    _MessageService_DataRequest_Handler,
+			MethodName: "AddBase",
+			Handler:    _MessageService_AddBase_Handler,
+		},
+		{
+			MethodName: "RenameBase",
+			Handler:    _MessageService_RenameBase_Handler,
+		},
+		{
+			MethodName: "UpdateValue",
+			Handler:    _MessageService_UpdateValue_Handler,
+		},
+		{
+			MethodName: "DeleteBase",
+			Handler:    _MessageService_DeleteBase_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

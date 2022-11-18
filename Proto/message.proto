@@ -1,24 +1,43 @@
 syntax = "proto3";
 package main;
-option go_package = ".";
+option go_package = "./";
 
 service MessageService {
-    rpc Upload (Message) returns (Reply);
-    rpc Download (Request) returns (Message);
-    rpc DataRequest (RequestNN) returns (Message);
+    //Guardianes
+    rpc GetSoldados (SoldierRequest) returns (SoldierAnswer);
+    //broker
+    rpc Redirect (Address) returns (Address);
+    //Vanguardia
+    rpc AddBase (Base) returns (VectorClock);
+    rpc RenameBase (Rename) returns (VectorClock);
+    rpc UpdateValue (Base) returns (VectorClock);
+    rpc DeleteBase (Base) returns (VectorClock);
+    //Servidores
+    //Consistencia Eventual
+}
+message Base{
+    string SectorName = 1;
+    string BaseName = 2;
+    int64 Value = 3;
+}
+message Rename{
+    string SectorName = 1;
+    string BaseName = 2;
+    string NewName = 3;
+}
+message Address{
+    string Address = 1;
+}
+message SoldierRequest{
+    string SectorName = 1;
+    string BaseName = 2;
+}
+message SoldierAnswer{
+    int64 Disponibles = 1;
+}
+message VectorClock{
+    int64 Valor1 = 1;
+    int64 Valor2 = 2;
+    int64 Valor3 = 3;
 }
 
-message Message {
-    int32 Id = 1;
-    string Data = 2;
-    string Categoria = 3;
-}
-message Reply {
-    bool Reply = 1;
-}
-message Request{
-    string Category = 1;
-}
-message RequestNN{
-    int32 Id = 1;
-}
